@@ -7,12 +7,15 @@ This is my attempt to reproduce the app made with the hand picked technologies b
 The BETH stack is composed of:
 
 - [Bun](https://bun.sh/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [JSX/TSX](https://react.dev/)
 - [Elysia](https:///elysiajs.com/)
-- [HTMX](https://htmx.org/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind](https://tailwindcss.com/)
 - [Turso](https://turso.tech/)
+- [HTMX](https://htmx.org/)
+
+and also has:
+
+- [JSX/TSX](https://react.dev/)
 - [Drizzle ORM](https://orm.drizzle.team/)
 
 # Elysia stuff
