@@ -14,6 +14,7 @@
     "elysia": "latest"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "latest",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "bun-types": "latest",
     "drizzle-kit": "^0.20.6",

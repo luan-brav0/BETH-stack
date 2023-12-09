@@ -160,6 +160,7 @@ function TodoForm() {
       hx-post="/todos"
       hx-target="#todo_list"
       hx-swap="beforeend"
+      _="on submit target.reset()"
     >
       <input
         id="todo_input"
@@ -167,9 +168,6 @@ function TodoForm() {
         name="content"
         placeholder="Add a todo"
         value=""
-        hx-get="/submit"
-        hx-swap="outerHTML"
-        hx-target="#todo_form"
       />
       <button
         type="submit"

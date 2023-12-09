@@ -12,8 +12,11 @@ The BETH stack is composed of:
 - [Tailwind](https://tailwindcss.com/)
 - [Turso](https://turso.tech/)
 - [HTMX](https://htmx.org/)
+- [HyperScript](https://hyperscript.org/)
 
 and also has:
 
 - [JSX/TSX](https://react.dev/)
 - [Drizzle ORM](https://orm.drizzle.team/)
+- [SQLite](https://www.sqlite.org/)
+- [Fly.io](https://fly.io/)
