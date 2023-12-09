@@ -6,6 +6,7 @@ import * as elements from "typed-html";
 
 const app = new Elysia()
   .use(html())
+
   .get("/", ({ html }) =>
     html(
       <BaseHTML>
@@ -31,8 +32,11 @@ const app = new Elysia()
       </BaseHTML>,
     ),
   )
+
   .post("/clicked", () => <div>Greetings from the server</div>)
+
   .get("/todos", () => <TodoList todos={db} />)
+
   .post(
     "/todos/toggle/:id",
     ({ params }) => {
@@ -48,6 +52,7 @@ const app = new Elysia()
       }),
     },
   )
+
   .delete(
     "/todos/:id",
     ({ params }) => {
@@ -62,28 +67,19 @@ const app = new Elysia()
       }),
     },
   )
+
   .post(
     "/todos",
     ({ body }) => {
       if (body.content.length == 0) {
         throw new Error("Content cannot be empty");
       }
-
       const newTodo = {
         id: getLastID() + 1,
         content: body.content,
         completed: false,
       };
       db.push(newTodo);
-      // TODO: figure how to clean input on submit (post /todos)
-      /*
-         document.addEventListener("htmx:afterSwap", (event) => {
-           if (event.detail.target.id == "todo_form") {
-             document.getElementById("input_todo").value = "";
-           }
-        });
-      */
-
       return <TodoItem {...newTodo} />;
     },
     {
@@ -92,6 +88,10 @@ const app = new Elysia()
       }),
     },
   )
+
+  .get("/submit", () => {
+    return <TodoForm />;
+  })
   .listen(3000);
 
 console.log(
@@ -156,7 +156,7 @@ function TodoItem({ id, content, completed }: Todo) {
 
 function TodoList({ todos }: { todos: Todo[] }) {
   return (
-    <div>
+    <div id="todos_container">
       <ul id="todo_list">
         {todos.map((todo) => (
           <TodoItem {...todo} />
@@ -182,10 +182,13 @@ function TodoForm() {
         name="content"
         class="border rounded-md border-gray-500 px-3 w-auto"
         placeholder="Add a todo"
+        hx-get="/submit"
+        hx-target="#todo_form"
+        hx-swap="outerHTML"
       />
       <button
         type="submit"
-        class="bg-green-600 bold text-white rounded-lg px-3 shadow"
+        class="bg-green-600 text-[1.2rem] bold text-white rounded-lg px-3 shadow"
       >
         +
       </button>
