@@ -185,6 +185,7 @@ function TodoForm() {
         hx-get="/submit"
         hx-target="#todo_form"
         hx-swap="outerHTML"
+        hx-trigger="submit"
       />
       <button
         type="submit"
