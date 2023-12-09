@@ -7,11 +7,13 @@
   },
   "dependencies": {
     "@elysiajs/html": "^0.7.3",
+    "drizzle-orm": "^0.29.1",
     "elysia": "latest"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "bun-types": "latest",
+    "drizzle-kit": "^0.20.6",
     "typed-html": "^3.0.1",
     "typescript": "^5.3.3"
   },

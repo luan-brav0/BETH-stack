@@ -10,15 +10,18 @@ const app = new Elysia()
     html(
       <BaseHTML>
         <body class="flex flex-col w-full h-screen justify-center items-center align-middle">
-          <h1 class="bold text-3xl">HTMX from Elysia, with Tailwind</h1>
+          <h1 class="bold text-3xl my-2">
+            HTM<b class="ml-[-0.5rem] text-[#3d72d7]">X</b> from 🦊 Elysia, with
+            TailwindCSS
+          </h1>
           <button
             hx-post="/clicked"
             hx-swap="innerHTML"
-            class="bg-gray-200 p-3"
+            class="bg-gray-200 rounded-md shadow p-3"
           >
             Click me
           </button>
-          <div
+          <di
             class="bg-gray-200"
             hx-get="/todos"
             hx-trigger="load"
@@ -28,7 +31,7 @@ const app = new Elysia()
       </BaseHTML>,
     ),
   )
-  .post("/clicked", () => <div class="p-3">Greetings from the server!</div>)
+  .post("/clicked", () => <div>Greetings from the server</div>)
   .get("/todos", () => <TodoList todos={db} />)
   .post(
     "/todos/toggle/:id",
@@ -42,6 +45,50 @@ const app = new Elysia()
     {
       params: t.Object({
         id: t.Numeric(),
+      }),
+    },
+  )
+  .delete(
+    "/todos/:id",
+    ({ params }) => {
+      const todo = db.find((todo) => todo.id === params.id);
+      if (todo) {
+        db.splice(db.indexOf(todo), 1);
+      }
+    },
+    {
+      params: t.Object({
+        id: t.Numeric(),
+      }),
+    },
+  )
+  .post(
+    "/todos",
+    ({ body }) => {
+      if (body.content.length == 0) {
+        throw new Error("Content cannot be empty");
+      }
+
+      const newTodo = {
+        id: getLastID() + 1,
+        content: body.content,
+        completed: false,
+      };
+      db.push(newTodo);
+      // TODO: figure how to clean input on submit (post /todos)
+      /*
+         document.addEventListener("htmx:afterSwap", (event) => {
+           if (event.detail.target.id == "todo_form") {
+             document.getElementById("input_todo").value = "";
+           }
+        });
+      */
+
+      return <TodoItem {...newTodo} />;
+    },
+    {
+      body: t.Object({
+        content: t.String(),
       }),
     },
   )
@@ -71,14 +118,23 @@ type Todo = {
 };
 
 const db: Todo[] = [
-  { id: 1, content: "Learn HTML", completed: false },
-  { id: 2, content: "Learn CSS", completed: false },
+  { id: 1, content: "Learn HTMX", completed: false },
+  { id: 2, content: "Get good at TypeSript", completed: false },
 ];
+
+function getLastID() {
+  if (db.length == 0) {
+    return 0;
+  }
+  return db[db.length - 1].id;
+}
 
 function TodoItem({ id, content, completed }: Todo) {
   return (
-    <div class="todo flex flex-row space-x-3">
-      <p class={completed ? "line-through" : "bold"}>{content}</p>
+    <li class="todo flex flex-row space-x-3">
+      <p class={completed ? "line-through" : "bold"}>
+        {id}: {content}
+      </p>
       <input
         type="checkbox"
         checked={completed}
@@ -86,17 +142,53 @@ function TodoItem({ id, content, completed }: Todo) {
         hx-target="closest .todo"
         hx-swap="outerHTML"
       />
-      <button class="text-red-500">X</button>
-    </div>
+      <button
+        class="text-red-500 bold text-2xl"
+        hx-delete={`/todos/${id}`}
+        hx-target="closest .todo"
+        hx-swap="outerHTML"
+      >
+        X
+      </button>
+    </li>
   );
 }
 
 function TodoList({ todos }: { todos: Todo[] }) {
   return (
-    <ul>
-      {todos.map((todo) => (
-        <TodoItem {...todo} />
-      ))}
-    </ul>
+    <div>
+      <ul id="todo_list">
+        {todos.map((todo) => (
+          <TodoItem {...todo} />
+        ))}
+      </ul>
+      <TodoForm />
+    </div>
+  );
+}
+
+function TodoForm() {
+  return (
+    <form
+      id="todo_form"
+      class="flex flex-row space-x-3"
+      hx-post="/todos"
+      hx-target="#todo_list"
+      hx-swap="beforeend"
+    >
+      <input
+        id="input_todo"
+        type="text"
+        name="content"
+        class="border rounded-md border-gray-500 px-3 w-auto"
+        placeholder="Add a todo"
+      />
+      <button
+        type="submit"
+        class="bg-green-600 bold text-white rounded-lg px-3 shadow"
+      >
+        +
+      </button>
+    </form>
   );
 }
