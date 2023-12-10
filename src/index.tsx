@@ -114,6 +114,7 @@ const BaseHTML = ({ children }: elements.Children) => `<!DOCTYPE html>
   </head>
 ${children}
 </html> `;
+
 function TodoItem({ id, content, completed }: SelectTodo) {
   return (
     <li class="todo flex flex-row space-x-3">
